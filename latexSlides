@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+latexSlidesRoot=/home/jlane/latexSlides
+TMP=$(mktemp -d)
+cat << EOF > main.tex
+\documentclass[preview]{standalone}
+EOF
+
+cat $latexSlidesRoot/preamble.tex >> main.tex
+cat <<EOF >> main.tex
+\begin{document}
+EOF
+
+cat $1 >> main.tex 
+
+cat << EOF >> main.tex
+\end{document}
+EOF
+
+
+pdflatex --output-directory=$TMP main.tex
+
+svg_output=$(echo $1 | sed 's/.tex/.svg/g')
+pdf2svg $TMP/main.pdf $svg_output
